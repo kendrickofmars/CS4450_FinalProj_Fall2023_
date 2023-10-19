@@ -1,6 +1,8 @@
+package cube1;
+
 /**
  *
- * @author fourf
+ * @author Ahhad Mukhtar, @author Gian De Jesus, @author Jonthan Thieu
  */
 
 import org.lwjgl.util.vector.Vector3f;
