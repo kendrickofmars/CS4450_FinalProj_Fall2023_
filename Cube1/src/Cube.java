@@ -61,36 +61,4 @@ public class Cube {
         glEnableClientState(GL_COLOR_ARRAY);
         glEnable(GL_DEPTH_TEST);
     }
-//
-//      private static void render(){
-//        
-//        
-//        
-//        
-//
-//        while(!Display.isCloseRequested()){
-//
-//            
-//            //getting keyboard input to exit out of program when the "esc" key is hit
-//            if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
-//                Display.destroy();
-//                System.exit(0);
-//            }
-//
-//            try{
-//                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//                glLoadIdentity();
-//                
-////
-//
-//                Display.update();
-//
-//                Display.sync(60);
-//            }catch(Exception e){
-//                e.printStackTrace();
-//            }
-//        }
-//        Display.destroy();
-//    }
-           
 }

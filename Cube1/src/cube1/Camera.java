@@ -100,7 +100,7 @@ public class Camera {
 
     public void gameLoop(){
         Camera camera = new Camera(0, 0, 0);
-//        Chunk chunk = new Chunk (1,1,1);
+        Chunk chunk = new Chunk (1,1,1); //chunk object placed at arbitrary xyz location
         float dx = 0.0f;
         float dy = 0.0f;
         float dt = 0.0f; //length of frame
@@ -152,10 +152,14 @@ public class Camera {
             camera.lookThrough();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             //you would draw your scene here.
-            render();
+//            render();
+            /**Instead of calling our camera render function we created for 
+             the camera controller class, we'll call the render method from 
+             chunk class using our chunk object*/
+            chunk.render();
             //draw the buffer to the screen
             Display.update();
-            Display.sync(60);
+            Display.sync(165);
             }
             Display.destroy();
             }
