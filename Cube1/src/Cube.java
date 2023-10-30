@@ -46,7 +46,7 @@ public class Cube {
         }
         Display.setDisplayMode(displayMode);
          
-        Display.setTitle("Checkpoint 1, CUBE"); //title of window
+        Display.setTitle("Checkpoint 2, Texture and Noise"); //title of window
         Display.create(); //creating the display object with the above specs
     }
      private void initGL(){
@@ -59,6 +59,9 @@ public class Cube {
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_COLOR_ARRAY);
+        glEnable(GL_TEXTURE_2D);
+        glEnableClientState (GL_TEXTURE_COORD_ARRAY);
+
         glEnable(GL_DEPTH_TEST);
     }
 }

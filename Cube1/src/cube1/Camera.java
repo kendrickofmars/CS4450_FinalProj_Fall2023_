@@ -159,7 +159,7 @@ public class Camera {
             chunk.render();
             //draw the buffer to the screen
             Display.update();
-            Display.sync(165);
+            Display.sync(60);
             }
             Display.destroy();
             }

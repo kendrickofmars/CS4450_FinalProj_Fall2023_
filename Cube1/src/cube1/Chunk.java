@@ -165,6 +165,38 @@ public class Chunk {
                     x + offset*4, y + offset*0,
                     x + offset*4, y + offset*1,
                     x + offset*3, y + offset*1};
+            default:
+                return new float[] {
+                    // BOTTOM QUAD(DOWN=+Y)
+                    x + offset*3, y + offset*10,
+                    x + offset*2, y + offset*10,
+                    x + offset*2, y + offset*9,
+                    x + offset*3, y + offset*9,
+                    // TOP!
+                    x + offset*3, y + offset*1,
+                    x + offset*2, y + offset*1,
+                    x + offset*2, y + offset*0,
+                    x + offset*3, y + offset*0,
+                    // FRONT QUAD
+                    x + offset*3, y + offset*0,
+                    x + offset*4, y + offset*0,
+                    x + offset*4, y + offset*1,
+                    x + offset*3, y + offset*1,
+                    // BACK QUAD
+                    x + offset*4, y + offset*1,
+                    x + offset*3, y + offset*1,
+                    x + offset*3, y + offset*0,
+                    x + offset*4, y + offset*0,
+                    // LEFT QUAD
+                    x + offset*3, y + offset*0,
+                    x + offset*4, y + offset*0,
+                    x + offset*4, y + offset*1,
+                    x + offset*3, y + offset*1,
+                    // RIGHT QUAD
+                    x + offset*3, y + offset*0,
+                    x + offset*4, y + offset*0,
+                    x + offset*4, y + offset*1,
+                    x + offset*3, y + offset*1};
         }
         
         
@@ -172,7 +204,7 @@ public class Chunk {
 
     public Chunk(int startX, int startY, int startZ) {
         try{
-            texture = TextureLoader.getTexture("PNG",ResourceLoader.getResourceAsStream("terrain.png"));
+            texture = TextureLoader.getTexture("PNG",ResourceLoader.getResourceAsStream("C:\\Users\\Ahhad Mukhtar\\Documents\\GitHub\\CS4450_FinalProj_Fall2023_\\Cube1\\terrain.png"));
         }
         catch(Exception e){
             System.out.print("ER-ROAR!");
