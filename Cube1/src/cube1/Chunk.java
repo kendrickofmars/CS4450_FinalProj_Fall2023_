@@ -127,7 +127,7 @@ public class Chunk {
 //        case 3:
 //        return new float[] { 0, 0f, 1f };
 //        }
-        return new float[] { 1, 1, 1 };
+        return new float[] { 1, 1, 1 };//white is our cube color
     }
     
     public static float[] createTexCube(float x, float y, Block block) {
@@ -204,7 +204,9 @@ public class Chunk {
 
     public Chunk(int startX, int startY, int startZ) {
         try{
+            /**Change the texture path on your own machine to where the terrain.png file is located*/
             texture = TextureLoader.getTexture("PNG",ResourceLoader.getResourceAsStream("C:\\Users\\Ahhad Mukhtar\\Documents\\GitHub\\CS4450_FinalProj_Fall2023_\\Cube1\\terrain.png"));
+            
         }
         catch(Exception e){
             System.out.print("ER-ROAR!");

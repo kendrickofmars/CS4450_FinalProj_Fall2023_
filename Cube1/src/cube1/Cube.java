@@ -1,3 +1,5 @@
+package cube1;
+
 import cube1.Camera;
 import java.io.BufferedReader;
 import org.lwjgl.opengl.Display;
