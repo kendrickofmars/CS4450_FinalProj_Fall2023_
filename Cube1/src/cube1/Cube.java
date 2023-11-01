@@ -19,7 +19,7 @@ import org.lwjgl.util.glu.GLU;
  * Purpose: Drawing and rendering a cube with camera controls to move around in the window
  */
 public class Cube {
-    private Camera cm = new Camera(0f,0f,0f);
+    private Camera cm = new Camera(300f,0f,300f);
     private DisplayMode displayMode;
     public static void main(String [] args){
         Cube c1 = new Cube();

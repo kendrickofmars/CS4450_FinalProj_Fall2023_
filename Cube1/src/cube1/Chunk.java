@@ -47,7 +47,18 @@ public class Chunk {
         FloatBuffer VertexPositionData = BufferUtils.createFloatBuffer((CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE) * 6 * 12);
         FloatBuffer VertexColorData = BufferUtils.createFloatBuffer((CHUNK_SIZE* CHUNK_SIZE * CHUNK_SIZE) * 6 * 12);
         FloatBuffer VertexTextureData = BufferUtils.createFloatBuffer((CHUNK_SIZE* CHUNK_SIZE *CHUNK_SIZE)* 6 * 12);
-
+        /**Persistence is used to affect the appearance of the terrain
+         * High persistence - towards 1, gives the rocky, mountainous terrain
+         * Low persistence - towards 0, gives slowly varying flat terrain
+         * We create a SimplexNoise object that takes in 3 parameters:
+         * the "largest feature, persistence and a seed for generating rand vals
+         * TODO: SimplexNoise logic 
+         */
+        
+        SimplexNoise noise = new SimplexNoise(30,1.2, 4);// args are int, double, int 
+        float height = (startY + (int)(100*noise.getNoise(0,0,0))* CUBE_LENGTH);
+//        int i=(int)(startX+x*((XEnd-xStart)/xResolution));
+        
         for (float x = 0; x < CHUNK_SIZE; x += 1) {
             for (float z = 0; z < CHUNK_SIZE; z += 1) {
                 for(float y = 0; y < CHUNK_SIZE; y++){
@@ -64,7 +75,7 @@ public class Chunk {
         VertexTextureData.flip();
         VertexColorData.flip();
         VertexPositionData.flip();
-        
+         
         glBindBuffer(GL_ARRAY_BUFFER,VBOVertexHandle);
         glBufferData(GL_ARRAY_BUFFER,VertexPositionData,GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -131,21 +142,21 @@ public class Chunk {
     }
     
     public static float[] createTexCube(float x, float y, Block block) {
-        float offset = (1024f/16)/1024f;
-        switch (block.GetID()) { //producing different textures based on what ID is passed 
+        float offset = (1024f/16)/1024f; //offset value finds exactly how wide each texture within our png is
+        switch (block.GetID()) { //returning different textures based on what ID is passed 
             case 1:
                 return new float[] {
-                    // BOTTOM QUAD(DOWN=+Y)
-                    x + offset*3, y + offset*10,
+                    // BOTTOM QUAD(DOWN=+Y), selects dirt block from png
+                    x + offset*3, y + offset*10, //moving 3 block lengths right, 10 block lengths down
                     x + offset*2, y + offset*10,
                     x + offset*2, y + offset*9,
                     x + offset*3, y + offset*9,
-                    // TOP!
+                    // TOP! //selects grass & dirt block from png
                     x + offset*3, y + offset*1,
                     x + offset*2, y + offset*1,
                     x + offset*2, y + offset*0,
                     x + offset*3, y + offset*0,
-                    // FRONT QUAD
+                    // FRONT QUAD, grass and dirt 
                     x + offset*3, y + offset*0,
                     x + offset*4, y + offset*0,
                     x + offset*4, y + offset*1,
@@ -205,8 +216,9 @@ public class Chunk {
     public Chunk(int startX, int startY, int startZ) {
         try{
             /**Change the texture path on your own machine to where the terrain.png file is located*/
-            texture = TextureLoader.getTexture("PNG",ResourceLoader.getResourceAsStream("C:\\Users\\Ahhad Mukhtar\\Documents\\GitHub\\CS4450_FinalProj_Fall2023_\\Cube1\\terrain.png"));
-            
+//            texture = TextureLoader.getTexture("PNG",ResourceLoader.getResourceAsStream("C:\\Users\\Ahhad Mukhtar\\Documents\\GitHub\\CS4450_FinalProj_Fall2023_\\Cube1\\terrain.png")); => laptop path
+//            "C:\\Users\\fourf\\OneDrive\\Documents\\NetBeansProjects\\CS4450_FinalProj_Fall2023_\\Cube1\\terrain.png", => desktop path
+            texture = TextureLoader.getTexture("PNG",ResourceLoader.getResourceAsStream("C:\\Users\\fourf\\OneDrive\\Documents\\NetBeansProjects\\CS4450_FinalProj_Fall2023_\\Cube1\\terrain.png"));
         }
         catch(Exception e){
             System.out.print("ER-ROAR!");
