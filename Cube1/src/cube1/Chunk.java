@@ -7,6 +7,7 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 
+
 /**
  *
  * @author fourf
@@ -24,6 +25,8 @@ public class Chunk {
     private int VBOTextureHandle;
     private Texture texture;
     private Random r;
+    private Random seed; //used for seeding the random number generator for terrain height generation in our Simplex Noise object
+    private Random i, j, k, ii, jj, kk;
     
     
     
@@ -47,21 +50,35 @@ public class Chunk {
         FloatBuffer VertexPositionData = BufferUtils.createFloatBuffer((CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE) * 6 * 12);
         FloatBuffer VertexColorData = BufferUtils.createFloatBuffer((CHUNK_SIZE* CHUNK_SIZE * CHUNK_SIZE) * 6 * 12);
         FloatBuffer VertexTextureData = BufferUtils.createFloatBuffer((CHUNK_SIZE* CHUNK_SIZE *CHUNK_SIZE)* 6 * 12);
+        seed = new Random(System.nanoTime());
+       
+        
+        i = new Random(System.nanoTime());
+        j = new Random(System.nanoTime());
+        k = new Random(System.nanoTime());
+        
+        
+        
         /**Persistence is used to affect the appearance of the terrain
          * High persistence - towards 1, gives the rocky, mountainous terrain
          * Low persistence - towards 0, gives slowly varying flat terrain
          * We create a SimplexNoise object that takes in 3 parameters:
          * the "largest feature, persistence and a seed for generating rand vals
-         * TODO: SimplexNoise logic 
          */
         
-        SimplexNoise noise = new SimplexNoise(30,1.2, 4);// args are int, double, int 
-        float height = (startY + (int)(100*noise.getNoise(0,0,0))* CUBE_LENGTH);
-//        int i=(int)(startX+x*((XEnd-xStart)/xResolution));
+        SimplexNoise noise = new SimplexNoise(30,.5, seed.nextInt());// args are int, double, int 
+        float height = (startY + (int)(30*noise.getNoise(i.nextInt(),j.nextInt(),k.nextInt()))* CUBE_LENGTH);
+        float max = 30;
+//        float height = (startY + (int)(30*noise.getNoise(1,2,3))* CUBE_LENGTH);
         
         for (float x = 0; x < CHUNK_SIZE; x += 1) {
             for (float z = 0; z < CHUNK_SIZE; z += 1) {
-                for(float y = 0; y < CHUNK_SIZE; y++){
+                for(float y = 0; y <= height; y++){//we change the y value here to get random values 
+//                    float height = (startY + (int)(30*noise.getNoise(i.nextInt(),j.nextInt(),k.nextInt()))* CUBE_LENGTH);
+//                    
+//                    if (height >= max){
+//                        max = height;
+//                    }
                     VertexPositionData.put(createCube((float) (startX + x * CUBE_LENGTH), (float)(y*CUBE_LENGTH + (int)(CHUNK_SIZE*.8)),
                                                         (float) (startZ + z *CUBE_LENGTH)));
                     VertexColorData.put(createCubeVertexCol(getCubeColor(Blocks[(int) x][(int) y][(int) z])));
@@ -87,6 +104,7 @@ public class Chunk {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         }
+    
     private float[] createCubeVertexCol(float[] CubeColorArray) {
         float[] cubeColors = new float[CubeColorArray.length * 4 * 6];
         for (int i = 0; i < cubeColors.length; i++) {
@@ -143,8 +161,11 @@ public class Chunk {
     
     public static float[] createTexCube(float x, float y, Block block) {
         float offset = (1024f/16)/1024f; //offset value finds exactly how wide each texture within our png is
+       
+        /**Grass(0), sand(1), water(2), dirt(3), stone(4), and bedrock(5)*/
+        
         switch (block.GetID()) { //returning different textures based on what ID is passed 
-            case 1:
+            case 0://grass
                 return new float[] {
                     // BOTTOM QUAD(DOWN=+Y), selects dirt block from png
                     x + offset*3, y + offset*10, //moving 3 block lengths right, 10 block lengths down
@@ -175,38 +196,206 @@ public class Chunk {
                     x + offset*3, y + offset*0,
                     x + offset*4, y + offset*0,
                     x + offset*4, y + offset*1,
-                    x + offset*3, y + offset*1};
-            default:
-                return new float[] {
-                    // BOTTOM QUAD(DOWN=+Y)
-                    x + offset*3, y + offset*10,
-                    x + offset*2, y + offset*10,
-                    x + offset*2, y + offset*9,
-                    x + offset*3, y + offset*9,
-                    // TOP!
+                    x + offset*3, y + offset*1
+                };
+            case 1: //sand
+                return new float[]{
+                // BOTTOM QUAD(DOWN=+Y), selects dirt block from png
+                    x + offset*2, y + offset*1, //2 right, 1 down ==>sand block
+                    x + offset*3, y + offset*1,
+                    x + offset*3, y + offset*2,
+                    x + offset*2, y + offset*2,
+                    // TOP! //selects grass & dirt block from png
+                    x + offset*2, y + offset*1, //2 right, 1 down ==>sand block
+                    x + offset*3, y + offset*1,
+                    x + offset*3, y + offset*2,
+                    x + offset*2, y + offset*2,
+                    // FRONT QUAD, grass and dirt 
+                    x + offset*2, y + offset*1, //2 right, 1 down ==>sand block
+                    x + offset*3, y + offset*1,
+                    x + offset*3, y + offset*2,
+                    x + offset*2, y + offset*2,
+                    // BACK QUAD
+                    x + offset*2, y + offset*1, //2 right, 1 down ==>sand block
+                    x + offset*3, y + offset*1,
+                    x + offset*3, y + offset*2,
+                    x + offset*2, y + offset*2,
+                    // LEFT QUAD
+                    x + offset*2, y + offset*1, //2 right, 1 down ==>sand block
+                    x + offset*3, y + offset*1,
+                    x + offset*3, y + offset*2,
+                    x + offset*2, y + offset*2,
+                    // RIGHT QUAD
+                    x + offset*2, y + offset*1, //2 right, 1 down ==>sand block
+                    x + offset*3, y + offset*1,
+                    x + offset*3, y + offset*2,
+                    x + offset*2, y + offset*2,
+                };
+            
+            case 2: //water
+                return new float[]{
+                    // BOTTOM QUAD(DOWN=+Y), selects dirt block from png
+                    x + offset*15, y + offset*1, //15 right, 1 down ==>water block
+                    x + offset*14, y + offset*1,
+                    x + offset*14, y + offset*0,
+                    x + offset*15, y + offset*0,
+                    // TOP! //selects grass & dirt block from png
+                    x + offset*15, y + offset*1, //15 right, 1 down ==>water block
+                    x + offset*14, y + offset*1,
+                    x + offset*14, y + offset*0,
+                    x + offset*15, y + offset*0,
+                    // FRONT QUAD, grass and dirt 
+                    x + offset*15, y + offset*1, //15 right, 1 down ==>water block
+                    x + offset*14, y + offset*1,
+                    x + offset*14, y + offset*0,
+                    x + offset*15, y + offset*0,
+                    // BACK QUAD
+                    x + offset*15, y + offset*1, //15 right, 1 down ==>water block
+                    x + offset*14, y + offset*1,
+                    x + offset*14, y + offset*0,
+                    x + offset*15, y + offset*0,
+                    // LEFT QUAD
+                    x + offset*15, y + offset*1, //15 right, 1 down ==>water block
+                    x + offset*14, y + offset*1,
+                    x + offset*14, y + offset*0,
+                    x + offset*15, y + offset*0,
+                    // RIGHT QUAD
+                    x + offset*15, y + offset*1, //15 right, 1 down ==>water block
+                    x + offset*14, y + offset*1,
+                    x + offset*14, y + offset*0,
+                    x + offset*15, y + offset*0,
+                };
+            
+            case 3: //dirt 
+                return new float[]{
+                    // BOTTOM QUAD(DOWN=+Y), selects dirt block from png
+                    x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
+                    x + offset*3, y + offset*0,
                     x + offset*3, y + offset*1,
                     x + offset*2, y + offset*1,
+                    // TOP! //selects grass & dirt block from png
+                    x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
+                    x + offset*3, y + offset*0,
+                    x + offset*3, y + offset*1,
+                    x + offset*2, y + offset*1,
+                    // FRONT QUAD, grass and dirt 
+                    x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
+                    x + offset*3, y + offset*0,
+                    x + offset*3, y + offset*1,
+                    x + offset*2, y + offset*1,
+                    // BACK QUAD
+                    x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
+                    x + offset*3, y + offset*0,
+                    x + offset*3, y + offset*1,
+                    x + offset*2, y + offset*1,
+                    // LEFT QUAD
+                    x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
+                    x + offset*3, y + offset*0,
+                    x + offset*3, y + offset*1,
+                    x + offset*2, y + offset*1,
+                    // RIGHT QUAD
+                    x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
+                    x + offset*3, y + offset*0,
+                    x + offset*3, y + offset*1,
+                    x + offset*2, y + offset*1,
+                };
+            case 4: //stone
+                return new float[]{
+                    // BOTTOM QUAD(DOWN=+Y), selects dirt block from png
+                    x + offset*1, y + offset*0, //1 right, 0 down ==>stone block
                     x + offset*2, y + offset*0,
+                    x + offset*2, y + offset*1,
+                    x + offset*1, y + offset*1,
+                    // TOP! //selects grass & dirt block from png
+                    x + offset*1, y + offset*0, //1 right, 0 down ==>stone block
+                    x + offset*2, y + offset*0,
+                    x + offset*2, y + offset*1,
+                    x + offset*1, y + offset*1,
+                    // FRONT QUAD, grass and dirt 
+                    x + offset*1, y + offset*0, //1 right, 0 down ==>stone block
+                    x + offset*2, y + offset*0,
+                    x + offset*2, y + offset*1,
+                    x + offset*1, y + offset*1,
+                    // BACK QUAD
+                    x + offset*1, y + offset*0, //1 right, 0 down ==>stone block
+                    x + offset*2, y + offset*0,
+                    x + offset*2, y + offset*1,
+                    x + offset*1, y + offset*1,
+                    // LEFT QUAD
+                    x + offset*1, y + offset*0, //1 right, 0 down ==>stone block
+                    x + offset*2, y + offset*0,
+                    x + offset*2, y + offset*1,
+                    x + offset*1, y + offset*1,
+                    // RIGHT QUAD
+                    x + offset*1, y + offset*0, //1 right, 0 down ==>stone block
+                    x + offset*2, y + offset*0,
+                    x + offset*2, y + offset*1,
+                    x + offset*1, y + offset*1,
+                };
+            case 5: //bedrock
+                return new float[]{
+                    // BOTTOM QUAD(DOWN=+Y), selects dirt block from png
+                    x + offset*1, y + offset*1, //1 right, 1 down ==>bedrock
+                    x + offset*2, y + offset*1,
+                    x + offset*2, y + offset*2,
+                    x + offset*1, y + offset*2,
+                    // TOP! //selects grass & dirt block from png
+                    x + offset*1, y + offset*1, //1 right, 1 down ==>bedrock
+                    x + offset*2, y + offset*1,
+                    x + offset*2, y + offset*2,
+                    x + offset*1, y + offset*2,
+                    // FRONT QUAD, grass and dirt 
+                    x + offset*1, y + offset*1, //1 right, 1 down ==>bedrock
+                    x + offset*2, y + offset*1,
+                    x + offset*2, y + offset*2,
+                    x + offset*1, y + offset*2,
+                    // BACK QUAD
+                    x + offset*1, y + offset*1, //1 right, 1 down ==>bedrock
+                    x + offset*2, y + offset*1,
+                    x + offset*2, y + offset*2,
+                    x + offset*1, y + offset*2,
+                    // LEFT QUAD
+                    x + offset*1, y + offset*1, //1 right, 1 down ==>bedrock
+                    x + offset*2, y + offset*1,
+                    x + offset*2, y + offset*2,
+                    x + offset*1, y + offset*2,
+                    // RIGHT QUAD
+                    x + offset*1, y + offset*1, //1 right, 1 down ==>bedrock
+                    x + offset*2, y + offset*1,
+                    x + offset*2, y + offset*2,
+                    x + offset*1, y + offset*2,
+                };    
+            default: //default case should be regular dirt blocks
+                return new float[] {
+                    // BOTTOM QUAD(DOWN=+Y), selects dirt block from png
+                    x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
                     x + offset*3, y + offset*0,
-                    // FRONT QUAD
+                    x + offset*2, y + offset*1,
+                    x + offset*3, y + offset*1,
+                    // TOP! //selects grass & dirt block from png
+                    x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
                     x + offset*3, y + offset*0,
-                    x + offset*4, y + offset*0,
-                    x + offset*4, y + offset*1,
+                    x + offset*2, y + offset*1,
+                    x + offset*3, y + offset*1,
+                    // FRONT QUAD, grass and dirt 
+                    x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
+                    x + offset*3, y + offset*0,
+                    x + offset*2, y + offset*1,
                     x + offset*3, y + offset*1,
                     // BACK QUAD
-                    x + offset*4, y + offset*1,
+                    x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
+                    x + offset*3, y + offset*0,
+                    x + offset*2, y + offset*1,
                     x + offset*3, y + offset*1,
-                    x + offset*3, y + offset*0,
-                    x + offset*4, y + offset*0,
                     // LEFT QUAD
+                    x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
                     x + offset*3, y + offset*0,
-                    x + offset*4, y + offset*0,
-                    x + offset*4, y + offset*1,
+                    x + offset*2, y + offset*1,
                     x + offset*3, y + offset*1,
                     // RIGHT QUAD
+                    x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
                     x + offset*3, y + offset*0,
-                    x + offset*4, y + offset*0,
-                    x + offset*4, y + offset*1,
+                    x + offset*2, y + offset*1,
                     x + offset*3, y + offset*1};
         }
         

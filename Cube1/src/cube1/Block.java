@@ -21,7 +21,7 @@ public class Block {
         private int BlockID;
         
         BlockType(int i) {
-            BlockID=i;
+            BlockID = i;
         }
         public int GetID(){
             return BlockID;
