@@ -54,7 +54,7 @@ public class Cube {
      private void initGL(){
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
+        glLoadIdentity();           
         GLU.gluPerspective(100.0f, (float)displayMode.getWidth()/(float)
         displayMode.getHeight(), 0.1f, 300.0f);
         glMatrixMode(GL_MODELVIEW);

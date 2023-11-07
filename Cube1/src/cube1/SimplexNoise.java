@@ -61,7 +61,7 @@ public class SimplexNoise {
 
     }
 
-    public double getNoise(int x,int y, int z){
+    public double getNoise(int x,int y, int z){ //our 3 random values that should change every iteration with each placement of a cube
 
         double result=0;
 

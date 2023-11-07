@@ -26,7 +26,8 @@ public class Chunk {
     private Texture texture;
     private Random r;
     private Random seed; //used for seeding the random number generator for terrain height generation in our Simplex Noise object
-    private Random i, j, k, ii, jj, kk;
+    private Random i, j, k;
+    private int xSeed, zSeed;
     
     
     
@@ -66,19 +67,25 @@ public class Chunk {
          * the "largest feature, persistence and a seed for generating rand vals
          */
         
+        /**
+         To get the random height generation per block that we are after: 
+         * We want to seed i,j, and k with completely separate random values
+         * How can we do this? As an example we can calculate i as follows:
+         * int i = (int)(xStart + x * ((XEnd - xStart)/CHUNK_SIZE)); 
+         * Where chunk size is the width of our chunk 
+         
+         */
         SimplexNoise noise = new SimplexNoise(30,.5, seed.nextInt());// args are int, double, int 
-        float height = (startY + (int)(30*noise.getNoise(i.nextInt(),j.nextInt(),k.nextInt()))* CUBE_LENGTH);
+
         float max = 30;
 //        float height = (startY + (int)(30*noise.getNoise(1,2,3))* CUBE_LENGTH);
         
         for (float x = 0; x < CHUNK_SIZE; x += 1) {
+            xSeed = (int)(startX + x * ((CHUNK_SIZE-startX/CHUNK_SIZE)));
             for (float z = 0; z < CHUNK_SIZE; z += 1) {
-                for(float y = 0; y <= height; y++){//we change the y value here to get random values 
-//                    float height = (startY + (int)(30*noise.getNoise(i.nextInt(),j.nextInt(),k.nextInt()))* CUBE_LENGTH);
-//                    
-//                    if (height >= max){
-//                        max = height;
-//                    }
+                zSeed = (int)(startZ + z * ((CHUNK_SIZE-startZ/CHUNK_SIZE)));
+                for(float y = 0; y <= (startY + (int)(30*noise.getNoise(xSeed,j.nextInt(),zSeed))* CUBE_LENGTH); y++){//we change the y value here to get random values 
+             
                     VertexPositionData.put(createCube((float) (startX + x * CUBE_LENGTH), (float)(y*CUBE_LENGTH + (int)(CHUNK_SIZE*.8)),
                                                         (float) (startZ + z *CUBE_LENGTH)));
                     VertexColorData.put(createCubeVertexCol(getCubeColor(Blocks[(int) x][(int) y][(int) z])));
@@ -229,7 +236,7 @@ public class Chunk {
                     x + offset*2, y + offset*1, //2 right, 1 down ==>sand block
                     x + offset*3, y + offset*1,
                     x + offset*3, y + offset*2,
-                    x + offset*2, y + offset*2,
+                    x + offset*2, y + offset*2
                 };
             
             case 2: //water
@@ -263,7 +270,7 @@ public class Chunk {
                     x + offset*15, y + offset*1, //15 right, 1 down ==>water block
                     x + offset*14, y + offset*1,
                     x + offset*14, y + offset*0,
-                    x + offset*15, y + offset*0,
+                    x + offset*15, y + offset*0
                 };
             
             case 3: //dirt 
@@ -297,7 +304,7 @@ public class Chunk {
                     x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
                     x + offset*3, y + offset*0,
                     x + offset*3, y + offset*1,
-                    x + offset*2, y + offset*1,
+                    x + offset*2, y + offset*1
                 };
             case 4: //stone
                 return new float[]{
@@ -330,7 +337,7 @@ public class Chunk {
                     x + offset*1, y + offset*0, //1 right, 0 down ==>stone block
                     x + offset*2, y + offset*0,
                     x + offset*2, y + offset*1,
-                    x + offset*1, y + offset*1,
+                    x + offset*1, y + offset*1
                 };
             case 5: //bedrock
                 return new float[]{
@@ -363,7 +370,7 @@ public class Chunk {
                     x + offset*1, y + offset*1, //1 right, 1 down ==>bedrock
                     x + offset*2, y + offset*1,
                     x + offset*2, y + offset*2,
-                    x + offset*1, y + offset*2,
+                    x + offset*1, y + offset*2
                 };    
             default: //default case should be regular dirt blocks
                 return new float[] {
@@ -396,7 +403,8 @@ public class Chunk {
                     x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
                     x + offset*3, y + offset*0,
                     x + offset*2, y + offset*1,
-                    x + offset*3, y + offset*1};
+                    x + offset*3, y + offset*1
+                };
         }
         
         
