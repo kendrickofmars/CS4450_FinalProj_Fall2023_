@@ -1,4 +1,5 @@
 /**
+ * 
  * CS4450 Checkpoint 2
  * Purpose: creating octaves of noise that give features of size between 1 and the largest feature
  */

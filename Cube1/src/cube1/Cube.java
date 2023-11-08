@@ -15,7 +15,7 @@ import org.lwjgl.util.glu.GLU;
 /**
  *
  * @author Ahhad Mukhtar, @author Gian De Jesus, @author Jonthan Thieu
- * CS4450 Checkpoint 1 
+ * CS4450 Checkpoint 2 
  * Purpose: Drawing and rendering a cube with camera controls to move around in the window
  */
 public class Cube {

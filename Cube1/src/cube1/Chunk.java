@@ -10,7 +10,11 @@ import org.newdawn.slick.util.ResourceLoader;
 
 /**
  *
- * @author fourf
+ * @author Ahhad Mukhtar
+ * CS4450 Checkpoint 2 
+ * Purpose: Generating a 30x30x random-height chunk using SimplexNoise and 
+ * SimplexNoise octave class. Also selects textures of blocks based on block IDs
+ * given.
  */
 
     import java.nio.FloatBuffer;
@@ -71,21 +75,32 @@ public class Chunk {
          To get the random height generation per block that we are after: 
          * We want to seed i,j, and k with completely separate random values
          * How can we do this? As an example we can calculate i as follows:
-         * int i = (int)(xStart + x * ((XEnd - xStart)/CHUNK_SIZE)); 
+         * int i = (int)(xStart + x * ((CHUNK_SIZE - xStart)/CHUNK_SIZE)); 
          * Where chunk size is the width of our chunk 
          
          */
-        SimplexNoise noise = new SimplexNoise(30,.5, seed.nextInt());// args are int, double, int 
+        SimplexNoise noise = new SimplexNoise(30,.04, seed.nextInt());// args are int, double, int 
 
         float max = 30;
 //        float height = (startY + (int)(30*noise.getNoise(1,2,3))* CUBE_LENGTH);
         
         for (float x = 0; x < CHUNK_SIZE; x += 1) {
+            //defining a random x value as a parameter in our noise.getNoise() method
             xSeed = (int)(startX + x * ((CHUNK_SIZE-startX/CHUNK_SIZE)));
             for (float z = 0; z < CHUNK_SIZE; z += 1) {
+                //defining a random z value as a parameter in our noise.getNoise() method
                 zSeed = (int)(startZ + z * ((CHUNK_SIZE-startZ/CHUNK_SIZE)));
-                for(float y = 0; y <= (startY + (int)(30*noise.getNoise(xSeed,j.nextInt(),zSeed))* CUBE_LENGTH); y++){//we change the y value here to get random values 
-             
+                
+                /**If y less-than-or-equal-to the random height that's returned, we place a block.
+                 * Because getNoise() can return a value between -1 and 1, 
+                 * we multiply by 100, and use Math.abs() for scaling. 
+                 * This is to avoid holes in our terrain, and ensure we always
+                 * have a terrain height of at least 1 cube high.
+                 */
+                
+                for(float y = 0; y <= (startY + (int)(100*Math.abs(noise.getNoise((int)x,(int)y,(int)z)))* CUBE_LENGTH); y++){//we change the y value here to get random values 
+                    //if we want the terrain generation to be even more random, we could use the xSeed and zSeed values
+                    //for now, we will stick with our iterators as the seed values for getNoise because it gives a more natural look to the terrain we generate
                     VertexPositionData.put(createCube((float) (startX + x * CUBE_LENGTH), (float)(y*CUBE_LENGTH + (int)(CHUNK_SIZE*.8)),
                                                         (float) (startZ + z *CUBE_LENGTH)));
                     VertexColorData.put(createCubeVertexCol(getCubeColor(Blocks[(int) x][(int) y][(int) z])));
@@ -155,15 +170,9 @@ public class Chunk {
             x + offset, y - offset, z };
         }
     private float[] getCubeColor(Block block) {
-//    switch (block.GetID()) {
-//        case 1:
-//        return new float[] { 0, 1, 0 };
-//        case 2:
-//        return new float[] { 1, 0.5f, 0 };
-//        case 3:
-//        return new float[] { 0, 0f, 1f };
-//        }
+        
         return new float[] { 1, 1, 1 };//white is our cube color
+        
     }
     
     public static float[] createTexCube(float x, float y, Block block) {
@@ -179,12 +188,12 @@ public class Chunk {
                     x + offset*2, y + offset*10,
                     x + offset*2, y + offset*9,
                     x + offset*3, y + offset*9,
-                    // TOP! //selects grass & dirt block from png
+                    // TOP! 
                     x + offset*3, y + offset*1,
                     x + offset*2, y + offset*1,
                     x + offset*2, y + offset*0,
                     x + offset*3, y + offset*0,
-                    // FRONT QUAD, grass and dirt 
+                    // FRONT QUAD
                     x + offset*3, y + offset*0,
                     x + offset*4, y + offset*0,
                     x + offset*4, y + offset*1,
@@ -207,17 +216,17 @@ public class Chunk {
                 };
             case 1: //sand
                 return new float[]{
-                // BOTTOM QUAD(DOWN=+Y), selects dirt block from png
+                // BOTTOM QUAD(DOWN=+Y), selects sand block from png
                     x + offset*2, y + offset*1, //2 right, 1 down ==>sand block
                     x + offset*3, y + offset*1,
                     x + offset*3, y + offset*2,
                     x + offset*2, y + offset*2,
-                    // TOP! //selects grass & dirt block from png
+                    // TOP! 
                     x + offset*2, y + offset*1, //2 right, 1 down ==>sand block
                     x + offset*3, y + offset*1,
                     x + offset*3, y + offset*2,
                     x + offset*2, y + offset*2,
-                    // FRONT QUAD, grass and dirt 
+                    // FRONT QUAD
                     x + offset*2, y + offset*1, //2 right, 1 down ==>sand block
                     x + offset*3, y + offset*1,
                     x + offset*3, y + offset*2,
@@ -241,17 +250,17 @@ public class Chunk {
             
             case 2: //water
                 return new float[]{
-                    // BOTTOM QUAD(DOWN=+Y), selects dirt block from png
+                    // BOTTOM QUAD(DOWN=+Y), selects water block from png
                     x + offset*15, y + offset*1, //15 right, 1 down ==>water block
                     x + offset*14, y + offset*1,
                     x + offset*14, y + offset*0,
                     x + offset*15, y + offset*0,
-                    // TOP! //selects grass & dirt block from png
+                    // TOP! 
                     x + offset*15, y + offset*1, //15 right, 1 down ==>water block
                     x + offset*14, y + offset*1,
                     x + offset*14, y + offset*0,
                     x + offset*15, y + offset*0,
-                    // FRONT QUAD, grass and dirt 
+                    // FRONT QUAD
                     x + offset*15, y + offset*1, //15 right, 1 down ==>water block
                     x + offset*14, y + offset*1,
                     x + offset*14, y + offset*0,
@@ -280,12 +289,12 @@ public class Chunk {
                     x + offset*3, y + offset*0,
                     x + offset*3, y + offset*1,
                     x + offset*2, y + offset*1,
-                    // TOP! //selects grass & dirt block from png
+                    // TOP! 
                     x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
                     x + offset*3, y + offset*0,
                     x + offset*3, y + offset*1,
                     x + offset*2, y + offset*1,
-                    // FRONT QUAD, grass and dirt 
+                    // FRONT QUAD
                     x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
                     x + offset*3, y + offset*0,
                     x + offset*3, y + offset*1,
@@ -308,17 +317,17 @@ public class Chunk {
                 };
             case 4: //stone
                 return new float[]{
-                    // BOTTOM QUAD(DOWN=+Y), selects dirt block from png
+                    // BOTTOM QUAD(DOWN=+Y), selects stone block from png
                     x + offset*1, y + offset*0, //1 right, 0 down ==>stone block
                     x + offset*2, y + offset*0,
                     x + offset*2, y + offset*1,
                     x + offset*1, y + offset*1,
-                    // TOP! //selects grass & dirt block from png
+                    // TOP! 
                     x + offset*1, y + offset*0, //1 right, 0 down ==>stone block
                     x + offset*2, y + offset*0,
                     x + offset*2, y + offset*1,
                     x + offset*1, y + offset*1,
-                    // FRONT QUAD, grass and dirt 
+                    // FRONT QUAD
                     x + offset*1, y + offset*0, //1 right, 0 down ==>stone block
                     x + offset*2, y + offset*0,
                     x + offset*2, y + offset*1,
@@ -341,12 +350,12 @@ public class Chunk {
                 };
             case 5: //bedrock
                 return new float[]{
-                    // BOTTOM QUAD(DOWN=+Y), selects dirt block from png
+                    // BOTTOM QUAD(DOWN=+Y)
                     x + offset*1, y + offset*1, //1 right, 1 down ==>bedrock
                     x + offset*2, y + offset*1,
                     x + offset*2, y + offset*2,
                     x + offset*1, y + offset*2,
-                    // TOP! //selects grass & dirt block from png
+                    // TOP! 
                     x + offset*1, y + offset*1, //1 right, 1 down ==>bedrock
                     x + offset*2, y + offset*1,
                     x + offset*2, y + offset*2,
@@ -372,38 +381,38 @@ public class Chunk {
                     x + offset*2, y + offset*2,
                     x + offset*1, y + offset*2
                 };    
-            default: //default case should be regular dirt blocks
+            default: //default case should be stone blocks
                 return new float[] {
-                    // BOTTOM QUAD(DOWN=+Y), selects dirt block from png
-                    x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
-                    x + offset*3, y + offset*0,
+                    // BOTTOM QUAD(DOWN=+Y), selects stone block from png
+                    x + offset*1, y + offset*0, //1 right, 0 down ==>stone block
+                    x + offset*2, y + offset*0,
                     x + offset*2, y + offset*1,
-                    x + offset*3, y + offset*1,
-                    // TOP! //selects grass & dirt block from png
-                    x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
-                    x + offset*3, y + offset*0,
+                    x + offset*1, y + offset*1,
+                    // TOP! 
+                    x + offset*1, y + offset*0, //1 right, 0 down ==>stone block
+                    x + offset*2, y + offset*0,
                     x + offset*2, y + offset*1,
-                    x + offset*3, y + offset*1,
-                    // FRONT QUAD, grass and dirt 
-                    x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
-                    x + offset*3, y + offset*0,
+                    x + offset*1, y + offset*1,
+                    // FRONT QUAD
+                    x + offset*1, y + offset*0, //1 right, 0 down ==>stone block
+                    x + offset*2, y + offset*0,
                     x + offset*2, y + offset*1,
-                    x + offset*3, y + offset*1,
+                    x + offset*1, y + offset*1,
                     // BACK QUAD
-                    x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
-                    x + offset*3, y + offset*0,
+                    x + offset*1, y + offset*0, //1 right, 0 down ==>stone block
+                    x + offset*2, y + offset*0,
                     x + offset*2, y + offset*1,
-                    x + offset*3, y + offset*1,
+                    x + offset*1, y + offset*1,
                     // LEFT QUAD
-                    x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
-                    x + offset*3, y + offset*0,
+                    x + offset*1, y + offset*0, //1 right, 0 down ==>stone block
+                    x + offset*2, y + offset*0,
                     x + offset*2, y + offset*1,
-                    x + offset*3, y + offset*1,
+                    x + offset*1, y + offset*1,
                     // RIGHT QUAD
-                    x + offset*2, y + offset*0, //2 right, 0 down ==>dirt block
-                    x + offset*3, y + offset*0,
+                    x + offset*1, y + offset*0, //1 right, 0 down ==>stone block
+                    x + offset*2, y + offset*0,
                     x + offset*2, y + offset*1,
-                    x + offset*3, y + offset*1
+                    x + offset*1, y + offset*1
                 };
         }
         
