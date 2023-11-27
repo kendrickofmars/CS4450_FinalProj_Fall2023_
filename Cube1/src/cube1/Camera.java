@@ -12,6 +12,9 @@ import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.Sys;
 
+import java.nio.FloatBuffer;
+import org.lwjgl.BufferUtils;
+
 public class Camera {
     //3d vector to store the camera's position in
     private Vector3f position = null;
@@ -45,36 +48,57 @@ public class Camera {
         pitch -= amount;
     }
 
-    //moves the camera forward relative to its current rotation (yaw)
+    //moves the camera & lighting forward relative to its current rotation (yaw)
     public void walkForward(float distance){
+//        FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
         float xOffset = distance * (float)Math.sin(Math.toRadians(yaw));
         float zOffset = distance * (float)Math.cos(Math.toRadians(yaw));
+        
+        
         position.x -= xOffset;
         position.z += zOffset;
+        
+//        lightPosition.put(lPosition.x+=xOffset).put(lPosition.y).put(lPosition.z-=zOffset).put(1.0f).flip();
+//        glLight(GL_LIGHT0,GL_POSITION,lightPosition);
     }
     
-    //moves the camera backward relative to its current rotation (yaw)
+    //moves the camera & lighting backward relative to its current rotation (yaw)
     public void walkBackwards(float distance){
+//        FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
         float xOffset = distance * (float)Math.sin(Math.toRadians(yaw));
         float zOffset = distance * (float)Math.cos(Math.toRadians(yaw));
+        
         position.x += xOffset;
         position.z -= zOffset;
+        
+//        lightPosition.put(lPosition.x-=xOffset).put(lPosition.y).put(lPosition.z+=zOffset).put(1.0f).flip();
+//        glLight(GL_LIGHT0,GL_POSITION,lightPosition);
     }
     
-    //strafes the camera left relative to its current rotation (yaw)
+    //strafes the camera & lighting left relative to its current rotation (yaw)
     public void strafeLeft(float distance){
+//        FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
         float xOffset = distance * (float)Math.sin(Math.toRadians(yaw-90));
         float zOffset = distance * (float)Math.cos(Math.toRadians(yaw-90));
+        
         position.x -= xOffset;
         position.z += zOffset;
+        
+//        lightPosition.put(lPosition.x+=xOffset).put(lPosition.y).put(lPosition.z+=zOffset).put(1.0f).flip();
+//        glLight(GL_LIGHT0,GL_POSITION,lightPosition);
     }
     
-    //strafes the camera right relative to its current rotation (yaw)
+    //strafes the camera & lighting right relative to its current rotation (yaw)
     public void strafeRight(float distance){
+//        FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
         float xOffset = distance * (float)Math.sin(Math.toRadians(yaw+90));
         float zOffset = distance * (float)Math.cos(Math.toRadians(yaw+90));
+        
         position.x -= xOffset;
         position.z += zOffset;
+        
+//        lightPosition.put(lPosition.x+=xOffset).put(lPosition.y).put(lPosition.z+=zOffset).put(1.0f).flip();
+//        glLight(GL_LIGHT0,GL_POSITION,lightPosition);
     }
     
     
@@ -90,12 +114,16 @@ public class Camera {
     //translates and rotate the matrix so that it looks through the camera
     //this does basically what gluLookAt() does
     public void lookThrough(){
+//        FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
         //rotate the pitch around the X axis
         glRotatef(pitch, 1.0f, 0.0f, 0.0f);
         //rotate the yaw around the Y axis
         glRotatef(yaw, 0.0f, 1.0f, 0.0f);
         //translate to the position vector's location
         glTranslatef(position.x, position.y, position.z);
+        
+//        lightPosition.put(lPosition.x+=position.x).put(lPosition.y).put(lPosition.z+=position.z).put(1.0f).flip();
+//        glLight(GL_LIGHT0,GL_POSITION,lightPosition);
     }
 
     public void gameLoop(){

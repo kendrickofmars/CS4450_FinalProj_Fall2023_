@@ -79,7 +79,7 @@ public class Chunk {
          * Where chunk size is the width of our chunk 
          
          */
-        SimplexNoise noise = new SimplexNoise(30,.04, seed.nextInt());// args are int, double, int 
+        SimplexNoise noise = new SimplexNoise(100,.2, seed.nextInt());// args are int, double, int 
 
         float max = 30;
 //        float height = (startY + (int)(30*noise.getNoise(1,2,3))* CUBE_LENGTH);
@@ -98,7 +98,7 @@ public class Chunk {
                  * have a terrain height of at least 1 cube high.
                  */
                 
-                for(float y = 0; y <= (startY + (int)(100*Math.abs(noise.getNoise((int)x,(int)y,(int)z)))* CUBE_LENGTH); y++){//we change the y value here to get random values 
+                for(float y = 0; y <= (startY + (int)(30*Math.abs(noise.getNoise((int)x,(int)y,(int)z)))* CUBE_LENGTH); y++){//we change the y value here to get random values 
                     //if we want the terrain generation to be even more random, we could use the xSeed and zSeed values
                     //for now, we will stick with our iterators as the seed values for getNoise because it gives a more natural look to the terrain we generate
                     VertexPositionData.put(createCube((float) (startX + x * CUBE_LENGTH), (float)(y*CUBE_LENGTH + (int)(CHUNK_SIZE*.8)),
