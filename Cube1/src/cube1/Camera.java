@@ -60,6 +60,9 @@ public class Camera {
         
 //        lightPosition.put(lPosition.x+=xOffset).put(lPosition.y).put(lPosition.z-=zOffset).put(1.0f).flip();
 //        glLight(GL_LIGHT0,GL_POSITION,lightPosition);
+
+        lPosition.x -= xOffset;
+        lPosition.z += zOffset;
     }
     
     //moves the camera & lighting backward relative to its current rotation (yaw)
@@ -73,6 +76,9 @@ public class Camera {
         
 //        lightPosition.put(lPosition.x-=xOffset).put(lPosition.y).put(lPosition.z+=zOffset).put(1.0f).flip();
 //        glLight(GL_LIGHT0,GL_POSITION,lightPosition);
+
+        lPosition.x += xOffset;
+        lPosition.z -= zOffset;
     }
     
     //strafes the camera & lighting left relative to its current rotation (yaw)
@@ -86,6 +92,9 @@ public class Camera {
         
 //        lightPosition.put(lPosition.x+=xOffset).put(lPosition.y).put(lPosition.z+=zOffset).put(1.0f).flip();
 //        glLight(GL_LIGHT0,GL_POSITION,lightPosition);
+
+        lPosition.x -= xOffset;
+        lPosition.z += zOffset;
     }
     
     //strafes the camera & lighting right relative to its current rotation (yaw)
@@ -99,6 +108,9 @@ public class Camera {
         
 //        lightPosition.put(lPosition.x+=xOffset).put(lPosition.y).put(lPosition.z+=zOffset).put(1.0f).flip();
 //        glLight(GL_LIGHT0,GL_POSITION,lightPosition);
+
+        lPosition.x -= xOffset;
+        lPosition.z += zOffset;
     }
     
     
@@ -111,9 +123,22 @@ public class Camera {
         position.y += distance;
     }
     
+    public void applyTranslations() {
+        glRotatef(pitch, 1.0f, 0.0f, 0.0f);
+        glRotatef(yaw, 0.0f, 1.0f, 0.0f);
+        glTranslatef(position.x, position.y, position.z);
+
+        // Update light position
+        FloatBuffer lightPositionBuffer = BufferUtils.createFloatBuffer(4);
+        lightPositionBuffer.put(lPosition.x).put(lPosition.y).put(lPosition.z).put(1.0f).flip();
+        glLight(GL_LIGHT0, GL_POSITION, lightPositionBuffer);
+    }
+    
     //translates and rotate the matrix so that it looks through the camera
     //this does basically what gluLookAt() does
     public void lookThrough(){
+        applyTranslations();
+        /**
 //        FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
         //rotate the pitch around the X axis
         glRotatef(pitch, 1.0f, 0.0f, 0.0f);
@@ -124,6 +149,7 @@ public class Camera {
         
 //        lightPosition.put(lPosition.x+=position.x).put(lPosition.y).put(lPosition.z+=position.z).put(1.0f).flip();
 //        glLight(GL_LIGHT0,GL_POSITION,lightPosition);
+        */
     }
 
     public void gameLoop(){
