@@ -10,11 +10,13 @@ import org.newdawn.slick.util.ResourceLoader;
 
 /**
  *
- * @author Ahhad Mukhtar
- * CS4450 Checkpoint 2 
+ * @author Ahhad Mukhtar @author Gian De Jesus @author Jonathan Thieu
+ * CS4450 Checkpoint 3
  * Purpose: Generating a 30x30x random-height chunk using SimplexNoise and 
  * SimplexNoise octave class. Also selects textures of blocks based on block IDs
- * given.
+ * given. Blocks at the top of the terrain are now properly set to grass, blocks 
+ * in the middle are stone, and blocks at the bottom are bedrock. Half-dim, 
+ * half-bright world was been added 
  */
 
     import java.nio.FloatBuffer;
@@ -56,12 +58,7 @@ public class Chunk {
         FloatBuffer VertexColorData = BufferUtils.createFloatBuffer((CHUNK_SIZE* CHUNK_SIZE * CHUNK_SIZE) * 6 * 12);
         FloatBuffer VertexTextureData = BufferUtils.createFloatBuffer((CHUNK_SIZE* CHUNK_SIZE *CHUNK_SIZE)* 6 * 12);
         seed = new Random(System.nanoTime());
-       
-        
-        i = new Random(System.nanoTime());
-        j = new Random(System.nanoTime());
-        k = new Random(System.nanoTime());
-        
+        Blocks = new Block[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
         
         
         /**Persistence is used to affect the appearance of the terrain
@@ -79,28 +76,40 @@ public class Chunk {
          * Where chunk size is the width of our chunk 
          
          */
-        SimplexNoise noise = new SimplexNoise(100,.2, seed.nextInt());// args are int, double, int 
+        SimplexNoise noise = new SimplexNoise(100,.05, seed.nextInt());// args are int, double, int 
 
         float max = 30;
+        int count = 0;
 //        float height = (startY + (int)(30*noise.getNoise(1,2,3))* CUBE_LENGTH);
         
-        for (float x = 0; x < CHUNK_SIZE; x += 1) {
-            //defining a random x value as a parameter in our noise.getNoise() method
-            xSeed = (int)(startX + x * ((CHUNK_SIZE-startX/CHUNK_SIZE)));
-            for (float z = 0; z < CHUNK_SIZE; z += 1) {
-                //defining a random z value as a parameter in our noise.getNoise() method
-                zSeed = (int)(startZ + z * ((CHUNK_SIZE-startZ/CHUNK_SIZE)));
-                
+        for (int x = 0; x < CHUNK_SIZE; x += 1) {
+            
+            for (int z = 0; z < CHUNK_SIZE; z += 1) {
                 /**If y less-than-or-equal-to the random height that's returned, we place a block.
                  * Because getNoise() can return a value between -1 and 1, 
                  * we multiply by 100, and use Math.abs() for scaling. 
                  * This is to avoid holes in our terrain, and ensure we always
                  * have a terrain height of at least 1 cube high.
                  */
-                
-                for(float y = 0; y <= (startY + (int)(30*Math.abs(noise.getNoise((int)x,(int)y,(int)z)))* CUBE_LENGTH); y++){//we change the y value here to get random values 
+                count +=1;
+                float height = (startY + (int)(100*Math.abs(noise.getNoise((int)x, count,(int)z))+1)* CUBE_LENGTH);
+                System.out.println("Height is: " + height);
+                for (int y = 0; y <= height; y++){//we change the y value here to get random values 
                     //if we want the terrain generation to be even more random, we could use the xSeed and zSeed values
                     //for now, we will stick with our iterators as the seed values for getNoise because it gives a more natural look to the terrain we generate
+                    
+                    //selecting block type based on the height of the terrain
+                    if(y == height){
+                        Blocks[x][y][z] = new
+                        Block(Block.BlockType.BlockType_Grass);//top == grass
+                    }else if(0< y && y <= height - 1){
+                        Blocks[x][y][z] = new
+                        Block(Block.BlockType.BlockType_Stone);//middle stone
+                    }else if(0<= y && y < height-1 || height <= y){
+                        Blocks[x][y][z] = new
+                        Block(Block.BlockType.BlockType_Bedrock);//bottom bedrock
+                    }else{Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Default);//default is stone
+                    }
                     VertexPositionData.put(createCube((float) (startX + x * CUBE_LENGTH), (float)(y*CUBE_LENGTH + (int)(CHUNK_SIZE*.8)),
                                                         (float) (startZ + z *CUBE_LENGTH)));
                     VertexColorData.put(createCubeVertexCol(getCubeColor(Blocks[(int) x][(int) y][(int) z])));
@@ -430,25 +439,23 @@ public class Chunk {
             System.out.print("ER-ROAR!");
         }
 
-        r= new Random();
-        Blocks = new Block[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
-        for (int x = 0; x < CHUNK_SIZE; x++) {
-            for (int y = 0; y < CHUNK_SIZE; y++) {
-                for (int z = 0; z < CHUNK_SIZE; z++) {
-                    if(r.nextFloat()>0.7f){
-                        Blocks[x][y][z] = new
-                        Block(Block.BlockType.BlockType_Grass);
-                    }else if(r.nextFloat()>0.4f){
-                        Blocks[x][y][z] = new
-                        Block(Block.BlockType.BlockType_Dirt);
-                    }else if(r.nextFloat()>0.2f){
-                        Blocks[x][y][z] = new
-                        Block(Block.BlockType.BlockType_Water);
-                    }else{Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Default);
-                    }
-                }
-            }
-        }
+//        for (int x = 0; x < CHUNK_SIZE; x++) {
+//            for (int z = 0; z < CHUNK_SIZE; z++) {  
+//                for (int y = 0; y< CHUNK_SIZE; y++) {
+//                    if(r.nextFloat()>=0.7f){
+//                        Blocks[x][y][z] = new
+//                        Block(Block.BlockType.BlockType_Grass);
+//                    }else if(r.nextFloat()>=0.5f){
+//                        Blocks[x][y][z] = new
+//                        Block(Block.BlockType.BlockType_Stone);
+//                    }else if(0.0f<r.nextFloat()&& r.nextFloat() < 0.1f){
+//                        Blocks[x][y][z] = new
+//                        Block(Block.BlockType.BlockType_Bedrock);
+//                    }else{Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Default);
+//                    }
+//                }
+//            }
+//        }
         VBOColorHandle = glGenBuffers();
         VBOVertexHandle = glGenBuffers();
         VBOTextureHandle = glGenBuffers();
@@ -456,7 +463,7 @@ public class Chunk {
         StartY = startY;
         StartZ = startZ;
         rebuildMesh(startX, startY, startZ);
-        }
+    }
     }
 
     

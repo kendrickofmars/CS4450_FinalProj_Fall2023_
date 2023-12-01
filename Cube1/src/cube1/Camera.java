@@ -3,8 +3,11 @@ package cube1;
 /**
  *
  * @author Ahhad Mukhtar, @author Gian De Jesus, @author Jonthan Thieu
+ * Purpose: controls viewmodel and what user sees
  */
 
+import java.nio.FloatBuffer;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -12,13 +15,13 @@ import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.Sys;
 
-import java.nio.FloatBuffer;
-import org.lwjgl.BufferUtils;
 
 public class Camera {
     //3d vector to store the camera's position in
     private Vector3f position = null;
     private Vector3f lPosition = null;
+    
+
     //the rotation around the Y axis of the camera
     private float yaw = 0.0f;
     //the rotation around the X axis of the camera
@@ -30,9 +33,9 @@ public class Camera {
     //instantiate position Vector3f to the x y z params.
     position = new Vector3f(x, y, z);
     lPosition = new Vector3f(x,y,z);
-    lPosition.x = 0f;
-    lPosition.y = 15f;
-    lPosition.z = 0f;
+    lPosition.x = 200f;
+    lPosition.y = 0f;
+    lPosition.z = 200f;
     }
     //increment the camera's current yaw rotation
     public void yaw(float amount)
@@ -48,69 +51,41 @@ public class Camera {
         pitch -= amount;
     }
 
-    //moves the camera & lighting forward relative to its current rotation (yaw)
+    //moves the camera forward relative to its current rotation (yaw)
     public void walkForward(float distance){
-//        FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
         float xOffset = distance * (float)Math.sin(Math.toRadians(yaw));
         float zOffset = distance * (float)Math.cos(Math.toRadians(yaw));
         
         
         position.x -= xOffset;
         position.z += zOffset;
-        
-//        lightPosition.put(lPosition.x+=xOffset).put(lPosition.y).put(lPosition.z-=zOffset).put(1.0f).flip();
-//        glLight(GL_LIGHT0,GL_POSITION,lightPosition);
-
-        lPosition.x -= xOffset;
-        lPosition.z += zOffset;
     }
     
-    //moves the camera & lighting backward relative to its current rotation (yaw)
+    //moves the camera backward relative to its current rotation (yaw)
     public void walkBackwards(float distance){
-//        FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
         float xOffset = distance * (float)Math.sin(Math.toRadians(yaw));
         float zOffset = distance * (float)Math.cos(Math.toRadians(yaw));
         
         position.x += xOffset;
         position.z -= zOffset;
-        
-//        lightPosition.put(lPosition.x-=xOffset).put(lPosition.y).put(lPosition.z+=zOffset).put(1.0f).flip();
-//        glLight(GL_LIGHT0,GL_POSITION,lightPosition);
-
-        lPosition.x += xOffset;
-        lPosition.z -= zOffset;
     }
     
-    //strafes the camera & lighting left relative to its current rotation (yaw)
+    //strafes the camera left relative to its current rotation (yaw)
     public void strafeLeft(float distance){
-//        FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
         float xOffset = distance * (float)Math.sin(Math.toRadians(yaw-90));
         float zOffset = distance * (float)Math.cos(Math.toRadians(yaw-90));
         
         position.x -= xOffset;
         position.z += zOffset;
-        
-//        lightPosition.put(lPosition.x+=xOffset).put(lPosition.y).put(lPosition.z+=zOffset).put(1.0f).flip();
-//        glLight(GL_LIGHT0,GL_POSITION,lightPosition);
-
-        lPosition.x -= xOffset;
-        lPosition.z += zOffset;
     }
     
-    //strafes the camera & lighting right relative to its current rotation (yaw)
+    //strafes the camera right relative to its current rotation (yaw)
     public void strafeRight(float distance){
-//        FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
         float xOffset = distance * (float)Math.sin(Math.toRadians(yaw+90));
         float zOffset = distance * (float)Math.cos(Math.toRadians(yaw+90));
         
         position.x -= xOffset;
         position.z += zOffset;
-        
-//        lightPosition.put(lPosition.x+=xOffset).put(lPosition.y).put(lPosition.z+=zOffset).put(1.0f).flip();
-//        glLight(GL_LIGHT0,GL_POSITION,lightPosition);
-
-        lPosition.x -= xOffset;
-        lPosition.z += zOffset;
     }
     
     
@@ -123,37 +98,19 @@ public class Camera {
         position.y += distance;
     }
     
-    public void applyTranslations() {
-        glRotatef(pitch, 1.0f, 0.0f, 0.0f);
-        glRotatef(yaw, 0.0f, 1.0f, 0.0f);
-        glTranslatef(position.x, position.y, position.z);
-
-        // Update light position
-        FloatBuffer lightPositionBuffer = BufferUtils.createFloatBuffer(4);
-        lightPositionBuffer.put(lPosition.x).put(lPosition.y).put(lPosition.z).put(1.0f).flip();
-        glLight(GL_LIGHT0, GL_POSITION, lightPositionBuffer);
-    }
-    
     //translates and rotate the matrix so that it looks through the camera
     //this does basically what gluLookAt() does
     public void lookThrough(){
-        applyTranslations();
-        /**
-//        FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
         //rotate the pitch around the X axis
         glRotatef(pitch, 1.0f, 0.0f, 0.0f);
         //rotate the yaw around the Y axis
         glRotatef(yaw, 0.0f, 1.0f, 0.0f);
         //translate to the position vector's location
         glTranslatef(position.x, position.y, position.z);
-        
-//        lightPosition.put(lPosition.x+=position.x).put(lPosition.y).put(lPosition.z+=position.z).put(1.0f).flip();
-//        glLight(GL_LIGHT0,GL_POSITION,lightPosition);
-        */
-    }
+}
 
     public void gameLoop(){
-        Camera camera = new Camera(0, 0, 0);
+        Camera camera = new Camera(1, -40, -20);
         Chunk chunk = new Chunk (1,1,1); //chunk object placed at arbitrary xyz location
         float dx = 0.0f;
         float dy = 0.0f;
@@ -202,11 +159,11 @@ public class Camera {
             }
             //set the modelview matrix back to the identity
             glLoadIdentity();
+            
             //look through the camera before you draw anything
             camera.lookThrough();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            //you would draw your scene here.
-//            render();
+           
             /**Instead of calling our camera render function we created for 
              the camera controller class, we'll call the render method from 
              chunk class using our chunk object*/
@@ -218,77 +175,6 @@ public class Camera {
             Display.destroy();
             }
     
-    private void render() {
-        try{
-            glBegin(GL_QUADS);
-              //Top
-              glColor3f(0.0f,0.0f,1.0f);
-              glVertex3f( 1.0f, 1.0f,-1.0f);
-              glVertex3f(-1.0f, 1.0f,-1.0f);
-              glVertex3f(-1.0f, 1.0f, 1.0f);
-              glVertex3f( 1.0f, 1.0f, 1.0f);
-              //Bottom
-              glColor3f(1.0f,1.0f,1.0f);
-              glVertex3f( 1.0f,-1.0f, 1.0f);
-              glVertex3f(-1.0f,-1.0f, 1.0f);
-              glVertex3f(-1.0f,-1.0f,-1.0f);
-              glVertex3f( 1.0f,-1.0f,-1.0f);
-              //Front
-              glColor3f(0.0f,1.0f,0.0f);
-              glVertex3f( 1.0f, 1.0f, 1.0f);
-              glVertex3f(-1.0f, 1.0f, 1.0f);
-              glVertex3f(-1.0f,-1.0f, 1.0f);
-              glVertex3f( 1.0f,-1.0f, 1.0f);
-              //Back
-              glColor3f(1.0f,0.0f,0.0f);
-              glVertex3f( 1.0f,-1.0f,-1.0f);
-              glVertex3f(-1.0f,-1.0f,-1.0f);
-              glVertex3f(-1.0f, 1.0f,-1.0f);
-              glVertex3f( 1.0f, 1.0f,-1.0f);
-              //Left
-              glColor3f(1.0f,0.0f,1.0f);
-              glVertex3f(-1.0f, 1.0f,1.0f);
-              glVertex3f(-1.0f, 1.0f,-1.0f);
-              glVertex3f(-1.0f,-1.0f,-1.0f);
-              glVertex3f(-1.0f,-1.0f, 1.0f);
-              //Right
-              glColor3f(1.0f,1.0f,0.0f);
-              glVertex3f( 1.0f, 1.0f,-1.0f);
-              glVertex3f( 1.0f, 1.0f, 1.0f);
-              glVertex3f( 1.0f,-1.0f, 1.0f);
-              glVertex3f( 1.0f,-1.0f,-1.0f);
-              glEnd();
-              glBegin(GL_LINE_LOOP);
-              //Top
-              glColor3f(0.0f,1.0f,1.0f);
-              glVertex3f( 1.0f, 1.0f,-1.0f);
-              glVertex3f(-1.0f, 1.0f,-1.0f);
-              glVertex3f(-1.0f, 1.0f, 1.0f);
-              glVertex3f( 1.0f, 1.0f, 1.0f);
-              glEnd();
-              glBegin(GL_LINE_LOOP);
-              //Bottom
-              glColor3f(1.0f,0.0f,0.0f);
-              glVertex3f( 1.0f,-1.0f, 1.0f);
-              glVertex3f(-1.0f,-1.0f, 1.0f);
-              glVertex3f(-1.0f,-1.0f,-1.0f);
-              glVertex3f( 1.0f,-1.0f,-1.0f);
-              glEnd();
-              glBegin(GL_LINE_LOOP);
-              //Front
-              glColor3f(0.0f,0.0f,0.0f);
-              glVertex3f( 1.0f, 1.0f, 1.0f);
-              glVertex3f(-1.0f, 1.0f, 1.0f);
-              glVertex3f(-1.0f,-1.0f, 1.0f);
-              glVertex3f( 1.0f,-1.0f, 1.0f);
-              glEnd();
-
-
-          glEnd();
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-    }
 }
  
 
