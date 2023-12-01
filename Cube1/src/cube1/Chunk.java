@@ -76,11 +76,9 @@ public class Chunk {
          * Where chunk size is the width of our chunk 
          
          */
-        SimplexNoise noise = new SimplexNoise(100,.05, seed.nextInt());// args are int, double, int 
+        SimplexNoise noise = new SimplexNoise(100,.2, seed.nextInt());// args are int, double, int 
 
         float max = 30;
-        int count = 0;
-//        float height = (startY + (int)(30*noise.getNoise(1,2,3))* CUBE_LENGTH);
         
         for (int x = 0; x < CHUNK_SIZE; x += 1) {
             
@@ -91,8 +89,8 @@ public class Chunk {
                  * This is to avoid holes in our terrain, and ensure we always
                  * have a terrain height of at least 1 cube high.
                  */
-                count +=1;
-                float height = (startY + (int)(100*Math.abs(noise.getNoise((int)x, count,(int)z))+1)* CUBE_LENGTH);
+                
+                float height = (startY + (int)(30*Math.abs(noise.getNoise((int)x, (int)x,(int)z))+1)* CUBE_LENGTH);
                 System.out.println("Height is: " + height);
                 for (int y = 0; y <= height; y++){//we change the y value here to get random values 
                     //if we want the terrain generation to be even more random, we could use the xSeed and zSeed values
@@ -431,7 +429,7 @@ public class Chunk {
     public Chunk(int startX, int startY, int startZ) {
         try{
             /**Change the texture path on your own machine to where the terrain.png file is located*/
-//            texture = TextureLoader.getTexture("PNG",ResourceLoader.getResourceAsStream("C:\\Users\\Ahhad Mukhtar\\Documents\\GitHub\\CS4450_FinalProj_Fall2023_\\Cube1\\terrain.png")); => laptop path
+//            texture = TextureLoader.getTexture("PNG",ResourceLoader.getResourceAsStream("C:\\Users\\Ahhad Mukhtar\\Documents\\GitHub\\CS4450_FinalProj_Fall2023_\\Cube1\\terrain.png")); //=> laptop path
 //            "C:\\Users\\fourf\\OneDrive\\Documents\\NetBeansProjects\\CS4450_FinalProj_Fall2023_\\Cube1\\terrain.png", => desktop path
             texture = TextureLoader.getTexture("PNG",ResourceLoader.getResourceAsStream("C:\\Users\\fourf\\OneDrive\\Documents\\NetBeansProjects\\CS4450_FinalProj_Fall2023_\\Cube1\\terrain.png"));
         }
