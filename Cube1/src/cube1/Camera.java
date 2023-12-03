@@ -21,6 +21,7 @@ public class Camera {
     private Vector3f position = null;
     private Vector3f lPosition = null;
     
+    private int CHUNK_SIZE = 30;
 
     //the rotation around the Y axis of the camera
     private float yaw = 0.0f;
@@ -100,17 +101,29 @@ public class Camera {
     
     //translates and rotate the matrix so that it looks through the camera
     //this does basically what gluLookAt() does
-    public void lookThrough(){
+    public void lookThrough(Camera camera){
         //rotate the pitch around the X axis
         glRotatef(pitch, 1.0f, 0.0f, 0.0f);
         //rotate the yaw around the Y axis
         glRotatef(yaw, 0.0f, 1.0f, 0.0f);
-        //translate to the position vector's location
+         //translate to the position vector's location
         glTranslatef(position.x, position.y, position.z);
+        
+        //debugging position of the camera to know where to set bounds
+        System.out.printf("X position is %f\tZ position is %f\tY position is %f\n", position.x, position.z, position.y);
+        
+        if(!((-60<=position.x &&  position.x <=0) && (-60<=position.z && position.z <=0))){
+            System.out.println("Out of bounds!");
+            position.setX(-30);
+            position.setZ(-30);
+            
+        }
+        
+        
 }
 
     public void gameLoop(){
-        Camera camera = new Camera(1, -40, -20);
+        Camera camera = new Camera(-30, -50, -30); //exactly halfway between each edge of the generated chunk
         Chunk chunk = new Chunk (1,1,1); //chunk object placed at arbitrary xyz location
         float dx = 0.0f;
         float dy = 0.0f;
@@ -139,6 +152,7 @@ public class Camera {
             //we times the movementSpeed with dt this is a time scale
             //so if its a slow frame u move more then a fast frame
             //so on a slow computer you move just as fast as on a fast computer
+            
             if (Keyboard.isKeyDown(Keyboard.KEY_W)){//move forward
                 camera.walkForward(movementSpeed);
             }
@@ -161,7 +175,7 @@ public class Camera {
             glLoadIdentity();
             
             //look through the camera before you draw anything
-            camera.lookThrough();
+            camera.lookThrough(camera);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
            
             /**Instead of calling our camera render function we created for 
