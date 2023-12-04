@@ -1,8 +1,6 @@
 package cube1;
 
 import cube1.Camera;
-import ddf.minim.AudioPlayer;
-import ddf.minim.Minim;
 import java.io.BufferedReader;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -36,13 +34,10 @@ public class Cube {
     
     private FloatBuffer lightPosition;
     private FloatBuffer whiteLight;
-    
-    Minim loader;
-    AudioPlayer song;
 
     
     public static void main(String [] args){
-        String filepath =  "Minecraft.mp3";
+        String filepath =  "C:\\Users\\Ahhad Mukhtar\\Documents\\GitHub\\CS4450_FinalProj_Fall2023_\\Cube1\\Minecraft2W.wav";
         PlayMusic(filepath);
         
         Cube c1 = new Cube();
@@ -66,7 +61,7 @@ public class Cube {
             }
         }
         catch(Exception e){
-            
+            e.printStackTrace();
         }
     }
     
