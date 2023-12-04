@@ -101,12 +101,7 @@ public class Camera {
     
     //translates and rotate the matrix so that it looks through the camera
     //this does basically what gluLookAt() does
-<<<<<<< Updated upstream
     public void lookThrough(Camera camera){
-=======
-    public void lookThrough(){
-        FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
->>>>>>> Stashed changes
         //rotate the pitch around the X axis
         glRotatef(pitch, 1.0f, 0.0f, 0.0f);
         //rotate the yaw around the Y axis
@@ -114,7 +109,6 @@ public class Camera {
          //translate to the position vector's location
         glTranslatef(position.x, position.y, position.z);
         
-<<<<<<< Updated upstream
         //debugging position of the camera to know where to set bounds
         System.out.printf("X position is %f\tZ position is %f\tY position is %f\n", position.x, position.z, position.y);
         
@@ -127,11 +121,6 @@ public class Camera {
         
         
 }
-=======
-        lightPosition.put(lPosition.x+=position.x).put(lPosition.y).put(lPosition.z+=position.z).put(1.0f).rewind();
-        glLight(GL_LIGHT0,GL_POSITION,lightPosition);
-    }
->>>>>>> Stashed changes
 
     public void gameLoop(){
         Camera camera = new Camera(-30, -50, -30); //exactly halfway between each edge of the generated chunk
