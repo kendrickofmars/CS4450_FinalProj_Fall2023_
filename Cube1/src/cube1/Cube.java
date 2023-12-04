@@ -21,7 +21,6 @@ import java.io.File;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.swing.JOptionPane;
 
 
 /**
@@ -37,36 +36,33 @@ public class Cube {
     private FloatBuffer lightPosition;
     private FloatBuffer whiteLight;
     
-    Minim loader;
-    AudioPlayer song;
-
+    private Clip clip;
     
     public static void main(String [] args){
-        String filepath =  "Minecraft.mp3";
-        PlayMusic(filepath);
-        
         Cube c1 = new Cube();
         c1.start();
         
+        Cube cube = new Cube();
+        String filepath =  "Minecraft.mp3";
+        cube.PlayMusic(filepath);
     }
     
-    public static void PlayMusic(String location){
+    public void PlayMusic(String filePath){
         try{
-            File musicPath = new File(location);
-            
-            if(musicPath.exists()){
-                AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
-                Clip clip = AudioSystem.getClip();
-                clip.open(audioInput);
-                clip.start();
-            }
-            else
-            {
-                System.out.println("Can't find file");
-            }
+            // Open an audio input stream.
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
+
+            // Get a clip resource.
+            clip = AudioSystem.getClip();
+
+            // Open audio clip and load samples from the audio input stream.
+            clip.open(audioInputStream);
+
+            // Start playing the background music on a loop.
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
         }
         catch(Exception e){
-            
+            e.printStackTrace();
         }
     }
     
