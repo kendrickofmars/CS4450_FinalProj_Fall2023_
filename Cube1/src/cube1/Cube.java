@@ -1,8 +1,6 @@
 package cube1;
 
 import cube1.Camera;
-import ddf.minim.AudioPlayer;
-import ddf.minim.Minim;
 import java.io.BufferedReader;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -40,11 +38,12 @@ public class Cube {
     
     public static void main(String [] args){
         Cube c1 = new Cube();
+        
+        String filepath =  "..\\Cube1\\Minecraft2W.wav";
+        c1.PlayMusic(filepath);
         c1.start();
         
-        Cube cube = new Cube();
-        String filepath =  "Minecraft.mp3";
-        cube.PlayMusic(filepath);
+        
     }
     
     public void PlayMusic(String filePath){
@@ -57,7 +56,7 @@ public class Cube {
 
             // Open audio clip and load samples from the audio input stream.
             clip.open(audioInputStream);
-
+            
             // Start playing the background music on a loop.
             clip.loop(Clip.LOOP_CONTINUOUSLY);
         }

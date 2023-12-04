@@ -91,7 +91,6 @@ public class Chunk {
                  */
                 
                 float height = (startY + (int)(30*Math.abs(noise.getNoise((int)x, (int)x,(int)z))+1)* CUBE_LENGTH);
-                System.out.println("Height is: " + height);
                 for (int y = 0; y <= height; y++){//we change the y value here to get random values 
                     //if we want the terrain generation to be even more random, we could use the xSeed and zSeed values
                     //for now, we will stick with our iterators as the seed values for getNoise because it gives a more natural look to the terrain we generate
@@ -431,7 +430,7 @@ public class Chunk {
             /**Change the texture path on your own machine to where the terrain.png file is located*/
 //            texture = TextureLoader.getTexture("PNG",ResourceLoader.getResourceAsStream("C:\\Users\\Ahhad Mukhtar\\Documents\\GitHub\\CS4450_FinalProj_Fall2023_\\Cube1\\terrain.png")); //=> laptop path
 //            "C:\\Users\\fourf\\OneDrive\\Documents\\NetBeansProjects\\CS4450_FinalProj_Fall2023_\\Cube1\\terrain.png", => desktop path
-            texture = TextureLoader.getTexture("PNG",ResourceLoader.getResourceAsStream("C:\\Users\\fourf\\OneDrive\\Documents\\NetBeansProjects\\CS4450_FinalProj_Fall2023_\\Cube1\\terrain.png"));
+            texture = TextureLoader.getTexture("PNG",ResourceLoader.getResourceAsStream("..\\Cube1\\terrain.png"));
         }
         catch(Exception e){
             System.out.print("ER-ROAR!");
