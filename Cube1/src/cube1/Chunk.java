@@ -7,6 +7,7 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 
+
 /**
  *
  * @author Ahhad Mukhtar @author Gian De Jesus @author Jonathan Thieu
@@ -90,7 +91,7 @@ public class Chunk {
                  */
                 
                 float height = (startY + (int)(30*Math.abs(noise.getNoise((int)x, (int)x,(int)z))+1)* CUBE_LENGTH);
-                
+                System.out.println("Height is: " + height);
                 for (int y = 0; y <= height; y++){//we change the y value here to get random values 
                     //if we want the terrain generation to be even more random, we could use the xSeed and zSeed values
                     //for now, we will stick with our iterators as the seed values for getNoise because it gives a more natural look to the terrain we generate
