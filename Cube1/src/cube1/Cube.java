@@ -1,6 +1,8 @@
 package cube1;
 
 import cube1.Camera;
+import ddf.minim.AudioPlayer;
+import ddf.minim.Minim;
 import java.io.BufferedReader;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -15,6 +17,12 @@ import org.lwjgl.util.glu.GLU;
 import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
 
+import java.io.File;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -28,11 +36,38 @@ public class Cube {
     
     private FloatBuffer lightPosition;
     private FloatBuffer whiteLight;
+    
+    Minim loader;
+    AudioPlayer song;
 
     
     public static void main(String [] args){
+        String filepath =  "Minecraft.mp3";
+        PlayMusic(filepath);
+        
         Cube c1 = new Cube();
         c1.start();
+        
+    }
+    
+    public static void PlayMusic(String location){
+        try{
+            File musicPath = new File(location);
+            
+            if(musicPath.exists()){
+                AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
+                Clip clip = AudioSystem.getClip();
+                clip.open(audioInput);
+                clip.start();
+            }
+            else
+            {
+                System.out.println("Can't find file");
+            }
+        }
+        catch(Exception e){
+            
+        }
     }
     
     public void start(){
@@ -84,6 +119,11 @@ public class Cube {
         
         glEnable(GL_LIGHTING);//enables our lighting
         glEnable(GL_LIGHT0);//enables light0
+        
+        
+        //loader = new Minim(this);
+        //song = loader.loadFile(Minecraft.mp3);
+        //song.play();
     }
      
      /**the first three values for lightPosition are what we would expect, the x,y,z
@@ -99,4 +139,5 @@ public class Cube {
         whiteLight.put(1.0f).put(1.0f).put(1.0f).put(0.0f).flip();
     }
 
+     
 }
