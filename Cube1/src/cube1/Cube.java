@@ -44,12 +44,15 @@ public class Cube {
     public static void main(String [] args){
         Cube c1 = new Cube();
         
-        String filepath =  "..\\Cube1\\Minecraft2W.wav";
-        c1.PlayMusic(filepath);
+        String filepath =  "..\\Cube1\\Minecraft2W.wav"; // This stores the filepath that we want to read for the background music
+        c1.PlayMusic(filepath); // Calls the method PlayMusic in order to play it when the game runs.
         c1.start();
         
         
     }
+    
+    // This feature is to add the background music as soon as the game starts
+    // It uses the audio stream library which grabs the file from the local folder
     public void PlayMusic(String filePath){
         try{
             // Open an audio input stream.
