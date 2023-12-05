@@ -116,6 +116,12 @@ public class Camera {
             System.out.println("Out of bounds!");
             position.setX(-30);
             position.setZ(-30);
+         
+            try{
+                gameLoop();
+            }catch(RuntimeException e){
+                e.printStackTrace();
+            }
             
         }
         
