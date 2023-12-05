@@ -11,7 +11,7 @@ import org.newdawn.slick.util.ResourceLoader;
 /**
  *
  * @author Ahhad Mukhtar @author Gian De Jesus @author Jonathan Thieu
- * CS4450 Checkpoint 3
+ * CS4450 Checkpoint 4
  * Purpose: Generating a 30x30x random-height chunk using SimplexNoise and 
  * SimplexNoise octave class. Also selects textures of blocks based on block IDs
  * given. Blocks at the top of the terrain are now properly set to grass, blocks 
@@ -435,24 +435,7 @@ public class Chunk {
         catch(Exception e){
             System.out.print("ER-ROAR!");
         }
-
-//        for (int x = 0; x < CHUNK_SIZE; x++) {
-//            for (int z = 0; z < CHUNK_SIZE; z++) {  
-//                for (int y = 0; y< CHUNK_SIZE; y++) {
-//                    if(r.nextFloat()>=0.7f){
-//                        Blocks[x][y][z] = new
-//                        Block(Block.BlockType.BlockType_Grass);
-//                    }else if(r.nextFloat()>=0.5f){
-//                        Blocks[x][y][z] = new
-//                        Block(Block.BlockType.BlockType_Stone);
-//                    }else if(0.0f<r.nextFloat()&& r.nextFloat() < 0.1f){
-//                        Blocks[x][y][z] = new
-//                        Block(Block.BlockType.BlockType_Bedrock);
-//                    }else{Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Default);
-//                    }
-//                }
-//            }
-//        }
+        
         VBOColorHandle = glGenBuffers();
         VBOVertexHandle = glGenBuffers();
         VBOTextureHandle = glGenBuffers();
