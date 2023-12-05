@@ -1,8 +1,6 @@
 package cube1;
 
 import cube1.Camera;
-import ddf.minim.AudioPlayer;
-import ddf.minim.Minim;
 import java.io.BufferedReader;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -25,9 +23,14 @@ import javax.sound.sampled.Clip;
 
 /**
  *
- * @author Ahhad Mukhtar, @author Gian De Jesus, @author Jonthan Thieu
- * CS4450 Checkpoint 2 
- * Purpose: Drawing and rendering a cube with camera controls to move around in the window
+ * @author Ahhad Mukhtar, @author Gian De Jesus, @author Jonathan Thieu
+ * CS4450 Checkpoint 4, Final Project with 3 extra features
+ * Purpose: Calling classes to draw and render a cube with camera controls to move around in the window, Playing music,
+ * generate source of lighting. 
+ * 3 Features we added: 
+ * Border checking - If user goes out of bounds, reset their position back
+ * Terrain re-generation - Upon meeting out of bounds condition we re-generate the terrain entirely
+ * Music playback - added functionality to play music (minecraft theme) and have it loop once it completes playback
  */
 public class Cube { 
     private Camera cm = new Camera(300f,0f,300f);
@@ -40,13 +43,13 @@ public class Cube {
     
     public static void main(String [] args){
         Cube c1 = new Cube();
+        
+        String filepath =  "..\\Cube1\\Minecraft2W.wav";
+        c1.PlayMusic(filepath);
         c1.start();
         
-        Cube cube = new Cube();
-        String filepath =  "Minecraft.mp3";
-        cube.PlayMusic(filepath);
+        
     }
-    
     public void PlayMusic(String filePath){
         try{
             // Open an audio input stream.
@@ -57,7 +60,7 @@ public class Cube {
 
             // Open audio clip and load samples from the audio input stream.
             clip.open(audioInputStream);
-
+            
             // Start playing the background music on a loop.
             clip.loop(Clip.LOOP_CONTINUOUSLY);
         }
@@ -91,7 +94,7 @@ public class Cube {
         Display.setTitle("Checkpoint 3, Texture and Noise"); //title of window
         Display.create(); //creating the display object with the above specs
     }
-     private void initGL(){
+     public void initGL(){
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();           
@@ -116,10 +119,6 @@ public class Cube {
         glEnable(GL_LIGHTING);//enables our lighting
         glEnable(GL_LIGHT0);//enables light0
         
-        
-        //loader = new Minim(this);
-        //song = loader.loadFile(Minecraft.mp3);
-        //song.play();
     }
      
      /**the first three values for lightPosition are what we would expect, the x,y,z

@@ -2,8 +2,9 @@ package cube1;
 
 /**
  *
- * @author Ahhad Mukhtar, @author Gian De Jesus, @author Jonthan Thieu
- * Purpose: controls viewmodel and what user sees
+ * @author Ahhad Mukhtar, @author Gian De Jesus, @author Jonathan Thieu
+ * Purpose: controls viewmodel and what user sees, as well as terrain generation/re-generation,
+ * and out of bounds handling
  */
 
 import java.nio.FloatBuffer;
@@ -112,11 +113,18 @@ public class Camera {
         //debugging position of the camera to know where to set bounds
         System.out.printf("X position is %f\tZ position is %f\tY position is %f\n", position.x, position.z, position.y);
         
+        /**when boundary is crossed, we set the user's x and z position back to 
+         * -30,-30. The y position stays at whatever the user last had when they exited.
+        
+        */
         if(!((-60<=position.x &&  position.x <=0) && (-60<=position.z && position.z <=0))){
             System.out.println("Out of bounds!");
             position.setX(-30);
             position.setZ(-30);
-         
+            /**
+             Terrain is randomly generated once again upon the out-of-bounds condition being met
+             * We catch the RuntimeException that is thrown as well.
+             */
             try{
                 gameLoop();
             }catch(RuntimeException e){

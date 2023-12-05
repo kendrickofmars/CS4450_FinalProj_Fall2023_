@@ -11,7 +11,7 @@ import org.newdawn.slick.util.ResourceLoader;
 /**
  *
  * @author Ahhad Mukhtar @author Gian De Jesus @author Jonathan Thieu
- * CS4450 Checkpoint 3
+ * CS4450 Checkpoint 4
  * Purpose: Generating a 30x30x random-height chunk using SimplexNoise and 
  * SimplexNoise octave class. Also selects textures of blocks based on block IDs
  * given. Blocks at the top of the terrain are now properly set to grass, blocks 
@@ -91,7 +91,6 @@ public class Chunk {
                  */
                 
                 float height = (startY + (int)(30*Math.abs(noise.getNoise((int)x, (int)x,(int)z))+1)* CUBE_LENGTH);
-                System.out.println("Height is: " + height);
                 for (int y = 0; y <= height; y++){//we change the y value here to get random values 
                     //if we want the terrain generation to be even more random, we could use the xSeed and zSeed values
                     //for now, we will stick with our iterators as the seed values for getNoise because it gives a more natural look to the terrain we generate
@@ -431,29 +430,12 @@ public class Chunk {
             /**Change the texture path on your own machine to where the terrain.png file is located*/
 //            texture = TextureLoader.getTexture("PNG",ResourceLoader.getResourceAsStream("C:\\Users\\Ahhad Mukhtar\\Documents\\GitHub\\CS4450_FinalProj_Fall2023_\\Cube1\\terrain.png")); //=> laptop path
 //            "C:\\Users\\fourf\\OneDrive\\Documents\\NetBeansProjects\\CS4450_FinalProj_Fall2023_\\Cube1\\terrain.png", => desktop path
-            texture = TextureLoader.getTexture("PNG",ResourceLoader.getResourceAsStream("C:\\Users\\fourf\\OneDrive\\Documents\\NetBeansProjects\\CS4450_FinalProj_Fall2023_\\Cube1\\terrain.png"));
+            texture = TextureLoader.getTexture("PNG",ResourceLoader.getResourceAsStream("..\\Cube1\\terrain.png"));
         }
         catch(Exception e){
             System.out.print("ER-ROAR!");
         }
-
-//        for (int x = 0; x < CHUNK_SIZE; x++) {
-//            for (int z = 0; z < CHUNK_SIZE; z++) {  
-//                for (int y = 0; y< CHUNK_SIZE; y++) {
-//                    if(r.nextFloat()>=0.7f){
-//                        Blocks[x][y][z] = new
-//                        Block(Block.BlockType.BlockType_Grass);
-//                    }else if(r.nextFloat()>=0.5f){
-//                        Blocks[x][y][z] = new
-//                        Block(Block.BlockType.BlockType_Stone);
-//                    }else if(0.0f<r.nextFloat()&& r.nextFloat() < 0.1f){
-//                        Blocks[x][y][z] = new
-//                        Block(Block.BlockType.BlockType_Bedrock);
-//                    }else{Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Default);
-//                    }
-//                }
-//            }
-//        }
+        
         VBOColorHandle = glGenBuffers();
         VBOVertexHandle = glGenBuffers();
         VBOTextureHandle = glGenBuffers();
